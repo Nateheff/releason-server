@@ -182,7 +182,7 @@ const getBody = async function (url) {
         return;
       } else {
         await getSendEmails(url, "nobody");
-        set204s(url);
+        setNobodys(url);
         return;
       }
     }
@@ -210,8 +210,16 @@ const getBody = async function (url) {
       getBody(url);
     }, 10000);
   } catch (err) {
-    console.log(err);
-    return;
+    const nobodies = await getNobodys();
+    if (nobodies.includes(url)) {
+      console.log(err);
+      return;
+    } else {
+      console.log(err);
+      await getSendEmails(url, "nobody");
+      setNobodys(url);
+      return;
+    }
   }
 };
 
