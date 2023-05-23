@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "firebase": "^9.22.0",
+    "node-fetch": "^2.6.11",
+    "nodemailer": "^6.9.2",
+    "nodemon": "^2.0.22",
+    "xoauth2": "^1.2.0"
+  },
+  "name": "releason-server",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon ./js/main.js"
+  },
+  "author": "Nathan heffington",
+  "license": "ISC",
+  "description": "",
+  "engines": {
+    "node": "18.16.0"
+  }
+}
