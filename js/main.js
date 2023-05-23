@@ -58,6 +58,18 @@ const getAllURLS = async function () {
   return accs;
 };
 
+const getNobodys = async function () {
+  const querySnapshot = await getDocs(collection(db, "nobody"));
+
+  const urls = [];
+
+  querySnapshot.forEach((doc) => {
+    const url = doc.data().url;
+    urls.push(url);
+  });
+  return urls;
+};
+
 const set204s = async function (url) {
   try {
     const docRef = await addDoc(collection(db, "204"), {
@@ -152,6 +164,7 @@ const getBody = async function (url) {
         Accept: "text/html",
       },
     });
+
     if (res.status == 204) {
       await getSendEmails(url, 204);
       set204s(url);
@@ -164,9 +177,14 @@ const getBody = async function (url) {
 
     const body = String(rough).split("<body")[2];
     if (!body) {
-      await getSendEmails(url, "nobody");
-      setNobodys(url);
-      return;
+      const nobodies = await getNobodys();
+      if (nobodies.includes(url)) {
+        return;
+      } else {
+        await getSendEmails(url, "nobody");
+        set204s(url);
+        return;
+      }
     }
 
     const currentSite = currentBods.find((site) => site.url == url);
@@ -202,11 +220,13 @@ const runIt = async function () {
   const accs = await getAllURLS();
 
   const urls = accs.flatMap((acc) => acc.urls);
+
   if (urls == curURLS) {
     return;
   }
 
-  curURLS.splice(0, curURLS.length - 1);
+  curURLS.splice(0, curURLS.length);
+
   curURLS.push(urls);
   urls.forEach((url) => {
     getBody(url);
