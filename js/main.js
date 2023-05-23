@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const http = require("http");
 const express = require("express");
 const nodemailer = require("nodemailer");
-const xoauth2 = require("xoauth2");
+const forever = require("forever-monitor");
 const cors = require("cors");
 const app = express();
 
@@ -143,6 +143,7 @@ const getSendEmails = async function (url, purpose) {
 const currentBods = [];
 
 const getBody = async function (url) {
+  console.log("started");
   try {
     const res = await fetch(`${url}`, {
       method: "GET",
@@ -157,6 +158,8 @@ const getBody = async function (url) {
       return;
     }
 
+    console.log("going");
+
     const rough = await res.text();
 
     const body = String(rough).split("<body")[2];
@@ -170,7 +173,7 @@ const getBody = async function (url) {
 
     if (!currentSite) {
       currentBods.push({ body: body, url: url });
-      await getSendEmails(url, "test");
+
       console.log(`added something new to ${url}`);
     } else if (currentSite.body != body) {
       await getSendEmails(url, "new");
