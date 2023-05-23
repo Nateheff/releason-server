@@ -13,7 +13,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "forever start ./js/main.js"
+    "start": "nodemon ./js/main.js"
   },
   "author": "Nathan heffington",
   "license": "ISC",

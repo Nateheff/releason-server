@@ -144,7 +144,7 @@ const sendEmail = async function (email, url, purpose) {
 const getSendEmails = async function (url, purpose) {
   const accs = await getAllURLS();
   accs.forEach(async (acc) => {
-    if (acc.urls.includes(url)) {
+    if (acc.urls && acc.urls.includes(url)) {
       await sendEmail(acc.email, url, purpose);
     } else {
       return;
@@ -155,7 +155,7 @@ const getSendEmails = async function (url, purpose) {
 const currentBods = [];
 
 const getBody = async function (url) {
-  console.log("started");
+  if (!url) return;
   try {
     const res = await fetch(`${url}`, {
       method: "GET",
@@ -170,8 +170,6 @@ const getBody = async function (url) {
       set204s(url);
       return;
     }
-
-    console.log("going");
 
     const rough = await res.text();
 
@@ -212,6 +210,7 @@ const getBody = async function (url) {
   } catch (err) {
     const nobodies = await getNobodys();
     if (nobodies.includes(url)) {
+      console.log(nobodies);
       console.log(err);
       return;
     } else {
