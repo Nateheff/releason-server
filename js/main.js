@@ -173,7 +173,8 @@ const getBody = async function (url) {
 
     const rough = await res.text();
 
-    const body = String(rough).split("<body")[2];
+    const body = String(rough).split("</head>")[1];
+
     if (!body) {
       const nobodies = await getNobodys();
       if (nobodies.includes(url)) {
@@ -206,7 +207,7 @@ const getBody = async function (url) {
 
     setTimeout(function () {
       getBody(url);
-    }, 10000);
+    }, 60000);
   } catch (err) {
     const nobodies = await getNobodys();
     if (nobodies.includes(url)) {
@@ -226,16 +227,24 @@ const curURLS = [];
 const runIt = async function () {
   const accs = await getAllURLS();
 
-  const urls = accs.flatMap((acc) => acc.urls);
+  const urls = accs
+    .flatMap((acc) => acc.urls)
+    .filter((val) => {
+      if (val != undefined && !curURLS.includes(val)) {
+        return val;
+      } else {
+        return;
+      }
+    });
 
   if (urls == curURLS) {
     return;
   }
 
-  curURLS.splice(0, curURLS.length);
-
-  curURLS.push(urls);
   urls.forEach((url) => {
+    if (!url) return;
+    curURLS.push(url);
+
     getBody(url);
   });
 
