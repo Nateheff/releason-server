@@ -247,12 +247,11 @@ const runIt = async function () {
 
     getBody(url);
   });
-
-  setTimeout(function () {
-    runIt();
-  }, 10000);
 };
-runIt();
+
+while (true) {
+  runIt();
+}
 
 // const maybePlease = async function () {
 //   const res = await fetch(
